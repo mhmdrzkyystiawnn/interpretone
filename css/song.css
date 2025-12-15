@@ -1,0 +1,119 @@
+/* ===================================
+   SONG DETAIL SPECIFIC STYLES
+   =================================== */
+
+/* 1. Header Lagu (Cover Besar) */
+.song-section { padding-top: 2rem; }
+.song-header {
+  display: grid; grid-template-columns: 300px 1fr; gap: 3rem;
+  align-items: flex-start; margin-bottom: 4rem;
+}
+.song-cover-large {
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 1px solid var(--glass-border);
+}
+.song-title-large { font-size: 3rem; margin-bottom: 0.5rem; line-height: 1.2; }
+.song-artist-large { font-size: 1.5rem; color: var(--maroon-strong); margin-bottom: 1.5rem; }
+.song-meta p { color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+/* Tombol Balik & External */
+.btn-secondary {
+  display: inline-block; margin-top: 1.5rem;
+  padding: 0.8rem 1.5rem; border: 1px solid var(--glass-border);
+  border-radius: var(--radius); color: #fff;
+  transition: var(--transition);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+
+/* 2. Lirik (Glass Container) */
+.lyrics-container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 3rem;
+  margin-bottom: 4rem;
+  box-shadow: var(--shadow-soft);
+}
+.section-title { font-size: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+
+/* Typography Lirik agar mudah dibaca */
+.lyrics-text {
+  font-size: 1.1rem;
+  line-height: 2; /* Jarak antar baris lega */
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  /* white-space: pre-wrap; -> Tidak perlu jika JS sudah handle <br> */
+}
+
+/* 3. Kartu Tafsiran & Komentar */
+.tafsiran-list { display: flex; flex-direction: column; gap: 2rem; }
+
+.tafsiran-card-full {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: var(--transition);
+}
+.tafsiran-card-full:hover {
+  background: var(--glass-bg-hover);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.tafsiran-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+.author-name { color: var(--maroon-strong); font-weight: 700; }
+.tafsiran-date { font-size: 0.8rem; color: var(--text-tertiary); display: block; }
+.tafsiran-content { font-size: 1.05rem; color: var(--text-primary); margin-bottom: 1.5rem; line-height: 1.7; }
+
+/* Action Buttons (Like/Comment) */
+.tafsiran-actions { display: flex; gap: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; }
+.btn-like, .btn-comment {
+  background: rgba(255,255,255,0.05); padding: 0.5rem 1rem;
+  border-radius: 0.5rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: center;
+  transition: var(--transition);
+}
+.btn-like:hover, .btn-comment:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-like.liked { background: var(--maroon-strong); color: #fff; box-shadow: 0 0 10px var(--maroon-glow); }
+
+/* 4. Form Input (Komentar & Submit Tafsiran) */
+.tafsir-form {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 2rem; margin-top: 4rem;
+}
+.form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); }
+
+.input-field {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  font-family: inherit; font-size: 1rem;
+  transition: var(--transition);
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--maroon-strong);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px rgba(232, 85, 119, 0.1);
+}
+
+/* Comments Section specific */
+.comments-section { margin-top: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius); }
+.comment { border-bottom: 1px solid var(--glass-border); padding: 1rem 0; }
+.comment:last-child { border-bottom: none; }
+.comment-author { color: var(--maroon-strong); font-size: 0.9rem; font-weight: bold; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .song-header { grid-template-columns: 1fr; text-align: center; }
+  .song-cover-large { max-width: 250px; margin: 0 auto; }
+  .lyrics-container { padding: 1.5rem; }
+  .song-title-large { font-size: 2rem; }
+}
