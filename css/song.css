@@ -1,119 +1,893 @@
-/* ===================================
-   SONG DETAIL SPECIFIC STYLES
-   =================================== */
-
-/* 1. Header Lagu (Cover Besar) */
-.song-section { padding-top: 2rem; }
-.song-header {
-  display: grid; grid-template-columns: 300px 1fr; gap: 3rem;
-  align-items: flex-start; margin-bottom: 4rem;
+/* ===== RESET & BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.song-cover-large {
-  border-radius: var(--radius);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+::selection {
+  background: var(--maroon-strong);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e85577, #c94266);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --bg-gradient: radial-gradient(ellipse at 20% 20%, rgba(64, 16, 34, 0.9), transparent 70%),
+      radial-gradient(ellipse at 80% 80%, rgba(122, 31, 55, 0.6), transparent 70%),
+      linear-gradient(135deg, #0f0509, #1a0812, #2d0f1a);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --accent: #ffb3cc;
+  --accent-strong: #ffe0eb;
+  --maroon: #c94266;
+  --maroon-strong: #e85577;
+  --maroon-glow: rgba(232, 85, 119, 0.3);
+  --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 40px 100px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 40px var(--maroon-glow);
+  --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== BODY ===== */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(232, 85, 119, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(201, 66, 102, 0.05) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.1); }
+}
+
+/* ===== CONTAINERS ===== */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.container-wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: calc(100% - 48px);
+  max-width: 1200px;
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(15, 5, 9, 0.9);
   border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 16px 0;
+  animation: slideDown 0.6s ease-out;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
-.song-title-large { font-size: 3rem; margin-bottom: 0.5rem; line-height: 1.2; }
-.song-artist-large { font-size: 1.5rem; color: var(--maroon-strong); margin-bottom: 1.5rem; }
-.song-meta p { color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
 
-/* Tombol Balik & External */
-.btn-secondary {
-  display: inline-block; margin-top: 1.5rem;
-  padding: 0.8rem 1.5rem; border: 1px solid var(--glass-border);
-  border-radius: var(--radius); color: #fff;
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
   transition: var(--transition);
 }
-.btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
-/* 2. Lirik (Glass Container) */
+.logo:hover {
+  transform: translateY(-2px);
+}
+
+.logo-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 4px 12px var(--maroon-glow));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.logo-text {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-strong), var(--maroon-strong));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.back-button {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+}
+
+.back-button:hover {
+  color: var(--text-primary);
+  background: var(--maroon-strong);
+  border-color: var(--maroon-strong);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px var(--maroon-glow);
+}
+
+/* ===== LOADING ===== */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 9999;
+  background: rgba(15, 5, 9, 0.95);
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--glass-border);
+  border-top-color: var(--maroon-strong);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== SECTIONS ===== */
+.song-section {
+  padding: 140px 0 60px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.lyrics-section,
+.tafsiran-section,
+.submit-section {
+  padding: 60px 0;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== SONG HEADER ===== */
+.song-header {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.song-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--maroon-glow), transparent);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.song-cover-large {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 1;
+}
+
+.song-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.song-title-large {
+  font-family: 'Sora', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--accent-strong), var(--maroon-strong));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.song-artist-large {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.song-album,
+.song-release,
+.song-featured {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: var(--transition);
+  width: fit-content;
+  margin-top: auto;
+}
+
+.btn-secondary:hover {
+  background: var(--maroon-strong);
+  border-color: var(--maroon-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--maroon-glow);
+}
+
+/* ===== LYRICS ===== */
+.section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: -1px;
+}
+
 .lyrics-container {
   background: var(--glass-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 3rem;
-  margin-bottom: 4rem;
+  border-radius: 20px;
+  padding: 32px;
   box-shadow: var(--shadow-soft);
 }
-.section-title { font-size: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
 
-/* Typography Lirik agar mudah dibaca */
 .lyrics-text {
-  font-size: 1.1rem;
-  line-height: 2; /* Jarak antar baris lega */
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  /* white-space: pre-wrap; -> Tidak perlu jika JS sudah handle <br> */
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  font-family: 'Georgia', serif;
 }
 
-/* 3. Kartu Tafsiran & Komentar */
-.tafsiran-list { display: flex; flex-direction: column; gap: 2rem; }
+.lyrics-placeholder {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.lyrics-placeholder p {
+  margin-bottom: 12px;
+}
+
+.text-sm {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ===== TAFSIRAN LIST ===== */
+.tafsiran-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
 .tafsiran-card-full {
   background: var(--glass-bg);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 2rem;
+  border-radius: 20px;
+  padding: 28px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.tafsiran-card-full::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--maroon-glow), transparent 70%);
+  opacity: 0;
   transition: var(--transition);
 }
+
 .tafsiran-card-full:hover {
-  background: var(--glass-bg-hover);
-  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-4px);
+  border-color: var(--maroon-strong);
+  box-shadow: var(--shadow-glow);
 }
 
-.tafsiran-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
-.author-name { color: var(--maroon-strong); font-weight: 700; }
-.tafsiran-date { font-size: 0.8rem; color: var(--text-tertiary); display: block; }
-.tafsiran-content { font-size: 1.05rem; color: var(--text-primary); margin-bottom: 1.5rem; line-height: 1.7; }
-
-/* Action Buttons (Like/Comment) */
-.tafsiran-actions { display: flex; gap: 1rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; }
-.btn-like, .btn-comment {
-  background: rgba(255,255,255,0.05); padding: 0.5rem 1rem;
-  border-radius: 0.5rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: center;
-  transition: var(--transition);
+.tafsiran-card-full:hover::before {
+  opacity: 1;
 }
-.btn-like:hover, .btn-comment:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.btn-like.liked { background: var(--maroon-strong); color: #fff; box-shadow: 0 0 10px var(--maroon-glow); }
 
-/* 4. Form Input (Komentar & Submit Tafsiran) */
-.tafsir-form {
-  background: rgba(0,0,0,0.2);
+.tafsiran-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.tafsiran-author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.author-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+}
+
+.tafsiran-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: block;
+}
+
+.tafsiran-stats-mini {
+  font-size: 14px;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.tafsiran-content {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.tafsiran-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+  position: relative;
+  z-index: 1;
+}
+
+.btn-like,
+.btn-comment {
+  background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 2rem; margin-top: 4rem;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); }
+
+.btn-like:hover,
+.btn-comment:hover {
+  background: var(--maroon-strong);
+  border-color: var(--maroon-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--maroon-glow);
+}
+
+.btn-like.liked {
+  background: var(--maroon-strong);
+  border-color: var(--maroon-strong);
+}
+
+/* ===== COMMENTS ===== */
+.comments-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--glass-border);
+  position: relative;
+  z-index: 1;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.comment {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-author {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.comment-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.comment-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.no-comments {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-style: italic;
+  padding: 20px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ===== SUBMIT FORM ===== */
+.tafsir-form {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow-soft);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.form-group small {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
 
 .input-field {
   width: 100%;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--glass-border);
-  color: #fff;
-  padding: 1rem;
-  border-radius: 0.8rem;
-  font-family: inherit; font-size: 1rem;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-family: inherit;
   transition: var(--transition);
+  resize: vertical;
 }
+
 .input-field:focus {
   outline: none;
   border-color: var(--maroon-strong);
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 15px rgba(232, 85, 119, 0.1);
+  box-shadow: 0 0 0 3px var(--maroon-glow);
 }
 
-/* Comments Section specific */
-.comments-section { margin-top: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: var(--radius); }
-.comment { border-bottom: 1px solid var(--glass-border); padding: 1rem 0; }
-.comment:last-child { border-bottom: none; }
-.comment-author { color: var(--maroon-strong); font-size: 0.9rem; font-weight: bold; }
+.input-field::placeholder {
+  color: var(--text-muted);
+}
 
-/* Responsive adjustments */
+textarea.input-field {
+  min-height: 150px;
+  line-height: 1.6;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--maroon-strong), var(--maroon));
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px var(--maroon-glow);
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--maroon-glow);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-large {
+  padding: 16px 40px;
+  font-size: 17px;
+  width: 100%;
+}
+
+.btn-small {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state,
+.error-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.empty-state p,
+.error-state p {
+  margin-bottom: 12px;
+}
+
+/* ===== TOAST NOTIFICATIONS ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 16px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-soft);
+  transform: translateX(400px);
+  transition: var(--transition);
+  z-index: 10000;
+  max-width: 320px;
+  font-size: 15px;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast-warning {
+  border-color: #ffa500;
+}
+
+.toast-error {
+  border-color: #ff4444;
+}
+
+.toast-success {
+  border-color: #00ff88;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 60px 0 40px;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 80px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-family: 'Sora', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.footer-text {
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.footer-credits {
+  color: var(--text-muted);
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .song-header {
+    grid-template-columns: 250px 1fr;
+    gap: 32px;
+    padding: 28px;
+  }
+
+  .song-title-large {
+    font-size: 36px;
+  }
+
+  .song-artist-large {
+    font-size: 24px;
+  }
+}
+
 @media (max-width: 768px) {
-  .song-header { grid-template-columns: 1fr; text-align: center; }
-  .song-cover-large { max-width: 250px; margin: 0 auto; }
-  .lyrics-container { padding: 1.5rem; }
-  .song-title-large { font-size: 2rem; }
+  .navbar {
+    top: 12px;
+    width: calc(100% - 24px);
+    border-radius: 20px;
+    padding: 12px 0;
+  }
+
+  .nav-content {
+    padding: 0 16px;
+  }
+
+  .logo-text {
+    font-size: 20px;
+  }
+
+  .logo-icon {
+    font-size: 28px;
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .song-section {
+    padding: 100px 0 40px;
+  }
+
+  .song-header {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .song-cover-large {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .song-title-large {
+    font-size: 28px;
+  }
+
+  .song-artist-large {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .lyrics-container,
+  .tafsir-form {
+    padding: 24px;
+  }
+
+  .tafsiran-card-full {
+    padding: 20px;
+  }
+
+  .comment-form {
+    flex-direction: column;
+  }
+
+  .comment-form .input-field {
+    width: 100%;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .song-title-large {
+    font-size: 24px;
+  }
+
+  .song-artist-large {
+    font-size: 18px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .tafsiran-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn-like,
+  .btn-comment {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--maroon-strong);
+  outline-offset: 4px;
 }

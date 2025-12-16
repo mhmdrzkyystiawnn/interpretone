@@ -1,22 +1,23 @@
 /**
- * Homepage - Search & Browse
+ * Interpretone - Main JavaScript
+ * Homepage - Search & Browse with Responsive Navigation
  */
 
+// ===== IMPORTS =====
 import { searchSongs, formatArtistName, debounce } from './genius-api.js';
 import { getRecentTafsiran, getPopularTafsiran } from './db.js';
 import { saveSearchHistory, getSearchHistory } from './storage.js';
 
-// DOM Elements
+// ===== DOM ELEMENTS =====
 let searchInput, searchButton, searchResults;
 let recentTafsiranContainer, popularTafsiranContainer;
 let loadingIndicator, searchHistoryContainer;
+let hamburger, navMenu;
 
-// State
+// ===== STATE =====
 let currentSearchResults = [];
 
-/**
- * Initialize homepage
- */
+// ===== INITIALIZATION =====
 async function init() {
   console.log('🎵 Interpretone - Homepage initialized');
   
@@ -28,19 +29,97 @@ async function init() {
   popularTafsiranContainer = document.getElementById('popularTafsiran');
   loadingIndicator = document.getElementById('loading');
   searchHistoryContainer = document.getElementById('searchHistory');
+  hamburger = document.getElementById('hamburger');
+  navMenu = document.getElementById('navMenu');
+  
+  // Setup features
+  setupResponsiveNav();
+  setupResizableNav();
+  setupSearch();
+  displaySearchHistory();
   
   // Load content
   await loadRecentTafsiran();
   await loadPopularTafsiran();
-  displaySearchHistory();
-  
-  // Setup search
-  setupSearch();
 }
 
-/**
- * Setup search functionality
- */
+// ===== RESPONSIVE NAVIGATION =====
+function setupResponsiveNav() {
+  if (!hamburger || !navMenu) return;
+  
+  // Toggle menu on hamburger click
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+  });
+  
+  // Close menu when clicking nav links
+  const navLinks = navMenu.querySelectorAll('.nav-link, .nav-btn');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      navMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+      hamburger.classList.remove('active');
+      navMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Close menu on window resize to desktop size
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      hamburger.classList.remove('active');
+      navMenu.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+}
+
+// ===== RESIZABLE NAVBAR ON SCROLL =====
+function setupResizableNav() {
+  const navbar = document.querySelector('.navbar');
+  if (!navbar) return;
+  
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  
+  const updateNavbar = () => {
+    const scrollY = window.scrollY;
+    
+    // Add/remove scrolled class based on scroll position
+    if (scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+    
+    lastScrollY = scrollY;
+    ticking = false;
+  };
+  
+  const requestTick = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateNavbar);
+      ticking = true;
+    }
+  };
+  
+  // Listen to scroll event with requestAnimationFrame for better performance
+  window.addEventListener('scroll', requestTick, { passive: true });
+  
+  // Initial check
+  updateNavbar();
+}
+
+// ===== SEARCH FUNCTIONALITY =====
 function setupSearch() {
   if (!searchInput || !searchButton) return;
   
@@ -50,7 +129,6 @@ function setupSearch() {
       searchResults.innerHTML = '';
       return;
     }
-    
     await performSearch(query);
   }, 2000);
 
@@ -73,9 +151,7 @@ function setupSearch() {
   });
 }
 
-/**
- * Perform search
- */
+// ===== PERFORM SEARCH =====
 async function performSearch(query) {
   if (!query || query.trim().length < 2) {
     showMessage('Masukkan minimal 2 karakter untuk mencari', 'warning');
@@ -92,7 +168,7 @@ async function performSearch(query) {
     if (results.length === 0) {
       searchResults.innerHTML = `
         <div class="no-results">
-          <p>❌ Tidak ada hasil untuk "${query}"</p>
+          <p>❌ Tidak ada hasil untuk "${escapeHtml(query)}"</p>
           <p class="text-sm">Coba kata kunci lain atau cek ejaan</p>
         </div>
       `;
@@ -101,7 +177,7 @@ async function performSearch(query) {
 
     // Save to search history
     saveSearchHistory(query);
-    displaySearchHistory(); // Update history display
+    displaySearchHistory();
 
     // Display results
     displaySearchResults(results);
@@ -119,20 +195,18 @@ async function performSearch(query) {
   }
 }
 
-/**
- * Display search results
- */
+// ===== DISPLAY SEARCH RESULTS =====
 function displaySearchResults(results) {
   searchResults.innerHTML = `
     <h3 class="results-title">Hasil Pencarian (${results.length})</h3>
     <div class="search-results-grid">
       ${results.map(song => `
         <a href="song.html?id=${song.id}" class="song-card">
-          <img src="${song.albumArt}" alt="${song.title}" class="song-cover" loading="lazy">
+          <img src="${song.albumArt}" alt="${escapeHtml(song.title)}" class="song-cover" loading="lazy">
           <div class="song-info">
-            <h4 class="song-title">${song.title}</h4>
-            <p class="song-artist">${formatArtistName(song.artist)}</p>
-            ${song.releaseDate ? `<p class="song-year">${song.releaseDate}</p>` : ''}
+            <h4 class="song-title">${escapeHtml(song.title)}</h4>
+            <p class="song-artist">${escapeHtml(formatArtistName(song.artist))}</p>
+            ${song.releaseDate ? `<p class="song-year">${escapeHtml(song.releaseDate)}</p>` : ''}
           </div>
         </a>
       `).join('')}
@@ -140,9 +214,7 @@ function displaySearchResults(results) {
   `;
 }
 
-/**
- * Load recent tafsiran from Firebase
- */
+// ===== LOAD RECENT TAFSIRAN =====
 async function loadRecentTafsiran() {
   if (!recentTafsiranContainer) return;
   
@@ -162,12 +234,12 @@ async function loadRecentTafsiran() {
     recentTafsiranContainer.innerHTML = tafsiran.map(t => `
       <div class="tafsiran-card" onclick="window.location.href='song.html?id=${t.geniusId}'">
         <div class="tafsiran-header">
-          <h4 class="tafsiran-song">${t.songTitle}</h4>
-          <p class="tafsiran-artist">${t.artist}</p>
+          <h4 class="tafsiran-song">${escapeHtml(t.songTitle)}</h4>
+          <p class="tafsiran-artist">${escapeHtml(t.artist)}</p>
         </div>
-        <p class="tafsiran-preview">${truncateText(t.interpretation, 120)}</p>
+        <p class="tafsiran-preview">${escapeHtml(truncateText(t.interpretation, 120))}</p>
         <div class="tafsiran-footer">
-          <span class="tafsiran-author">👤 ${t.author}</span>
+          <span class="tafsiran-author">👤 ${escapeHtml(t.author)}</span>
           <span class="tafsiran-stats">
             ❤️ ${t.rating || 0} · 👁️ ${t.viewCount || 0}
           </span>
@@ -182,9 +254,7 @@ async function loadRecentTafsiran() {
   }
 }
 
-/**
- * Load popular tafsiran from Firebase
- */
+// ===== LOAD POPULAR TAFSIRAN =====
 async function loadPopularTafsiran() {
   if (!popularTafsiranContainer) return;
   
@@ -203,12 +273,12 @@ async function loadPopularTafsiran() {
     popularTafsiranContainer.innerHTML = tafsiran.map(t => `
       <div class="tafsiran-card" onclick="window.location.href='song.html?id=${t.geniusId}'">
         <div class="tafsiran-header">
-          <h4 class="tafsiran-song">${t.songTitle}</h4>
-          <p class="tafsiran-artist">${t.artist}</p>
+          <h4 class="tafsiran-song">${escapeHtml(t.songTitle)}</h4>
+          <p class="tafsiran-artist">${escapeHtml(t.artist)}</p>
         </div>
-        <p class="tafsiran-preview">${truncateText(t.interpretation, 120)}</p>
+        <p class="tafsiran-preview">${escapeHtml(truncateText(t.interpretation, 120))}</p>
         <div class="tafsiran-footer">
-          <span class="tafsiran-author">👤 ${t.author}</span>
+          <span class="tafsiran-author">👤 ${escapeHtml(t.author)}</span>
           <span class="tafsiran-stats">
             ❤️ ${t.rating || 0} · 👁️ ${t.viewCount || 0}
           </span>
@@ -223,9 +293,7 @@ async function loadPopularTafsiran() {
   }
 }
 
-/**
- * Display search history from localStorage
- */
+// ===== DISPLAY SEARCH HISTORY =====
 function displaySearchHistory() {
   if (!searchHistoryContainer) return;
   
@@ -240,26 +308,32 @@ function displaySearchHistory() {
     <h4 class="history-title">Pencarian Terakhir:</h4>
     <div class="search-history-tags">
       ${history.map(q => `
-        <button class="history-tag" onclick="document.getElementById('searchInput').value='${escapeHtml(q)}'; document.getElementById('searchButton').click()">
+        <button class="history-tag" data-query="${escapeHtml(q)}">
           ${escapeHtml(q)}
         </button>
       `).join('')}
     </div>
   `;
+  
+  // Add click handlers to history tags
+  const historyTags = searchHistoryContainer.querySelectorAll('.history-tag');
+  historyTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      const query = tag.getAttribute('data-query');
+      searchInput.value = query;
+      performSearch(query);
+    });
+  });
 }
 
-/**
- * Show loading indicator
- */
+// ===== SHOW LOADING =====
 function showLoading(show) {
   if (loadingIndicator) {
     loadingIndicator.style.display = show ? 'flex' : 'none';
   }
 }
 
-/**
- * Show message toast
- */
+// ===== SHOW MESSAGE TOAST =====
 function showMessage(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
@@ -275,17 +349,12 @@ function showMessage(message, type = 'info') {
   }, 3000);
 }
 
-/**
- * Truncate text
- */
+// ===== UTILITY FUNCTIONS =====
 function truncateText(text, maxLength) {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength).trim() + '...';
 }
 
-/**
- * Format date
- */
 function formatDate(timestamp) {
   if (!timestamp) return '';
   
@@ -305,18 +374,27 @@ function formatDate(timestamp) {
   });
 }
 
-/**
- * Escape HTML to prevent XSS
- */
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
-// Initialize when DOM is ready
+// ===== INITIALIZE ON DOM READY =====
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
 }
+
+// ===== SMOOTH SCROLLING FOR ANCHOR LINKS =====
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (link) {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+});

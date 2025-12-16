@@ -8,16 +8,15 @@
   
   <title>Interpretone - Discover the Deeper Meaning Behind Every Song</title>
   
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
-  
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   
@@ -29,9 +28,19 @@
           <span class="logo-icon">🎵</span>
           <span class="logo-text">Interpretone</span>
         </a>
-        <div class="nav-tagline">
-          Discover the deeper meaning behind every song
+        
+        <div class="nav-menu" id="navMenu">
+          <a href="#recent" class="nav-link">Terbaru</a>
+          <a href="#popular" class="nav-link">Populer</a>
+          <a href="#about" class="nav-link">Tentang</a>
+          <button class="nav-btn">Kontribusi</button>
         </div>
+        
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
     </div>
   </nav>
@@ -50,6 +59,10 @@
       <!-- Search Bar -->
       <div class="search-container">
         <div class="search-box">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
           <input 
             type="text" 
             id="searchInput" 
@@ -58,10 +71,7 @@
             autocomplete="off"
           >
           <button id="searchButton" class="search-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
+            Cari
           </button>
         </div>
         
@@ -81,7 +91,7 @@
   </div>
 
   <!-- Recent Tafsiran Section -->
-  <section class="section">
+  <section class="section" id="recent">
     <div class="container">
       <h2 class="section-title">
         <span class="title-icon">🆕</span>
@@ -94,7 +104,7 @@
   </section>
 
   <!-- Popular Tafsiran Section -->
-  <section class="section section-alt">
+  <section class="section section-alt" id="popular">
     <div class="container">
       <h2 class="section-title">
         <span class="title-icon">🔥</span>
@@ -117,6 +127,11 @@
         <p class="footer-text">
           Platform untuk berbagi dan menemukan interpretasi musik
         </p>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Tentang</a>
+          <a href="#" class="footer-link">Kontak</a>
+          <a href="#" class="footer-link">Kebijakan</a>
+        </div>
         <p class="footer-credits">
           Powered by Genius API | Made with ❤️
         </p>
